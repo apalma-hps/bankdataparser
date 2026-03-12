@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual env
+.venv/
+venv/
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+
+# Output files
+output/
+*.xlsx
+*.csv
+*.log
+*.json
+
+# Test data
+sample_pdfs/
+
+# Secrets
+.env
