@@ -176,10 +176,12 @@ class BBVAParserV1(BaseBankParser):
         headers = {}
 
         for line in line_items:
-            for word in line["words"]:
-                token = word["text"].upper()
-                if token in {"CARGOS", "ABONOS", "OPERACIÓN", "LIQUIDACIÓN"}:
-                    headers.setdefault(token, (word["x0"] + word["x1"]) / 2)
+            token = line["text"].upper()
+            if token not in {"CARGOS", "ABONOS", "OPERACIÓN", "LIQUIDACIÓN"}:
+                continue
+
+            word = line["words"][0]
+            headers.setdefault(token, (word["x0"] + word["x1"]) / 2)
 
         return {
             "charge": headers.get("CARGOS"),
@@ -190,7 +192,7 @@ class BBVAParserV1(BaseBankParser):
 
     def _extract_meta(self, full_text: str) -> StatementMeta:
         period_match = re.search(
-            r"Periodo DEL (\d{2}/\d{2}/\d{4}) AL (\d{2}/\d{2}/\d{4})",
+            r"Periodo\s+DEL (\d{2}/\d{2}/\d{4})\s+AL (\d{2}/\d{2}/\d{4})",
             full_text
         )
         account_match = re.search(r"No\.\s+de Cuenta\s+(\d+)", full_text)
@@ -509,6 +511,10 @@ class BBVAParserV1(BaseBankParser):
             "DIRECCION:",
             "Tiene 90 días naturales",
             "Estimado Cliente",
+            "Su Estado de Cuenta ha sido modificado",
+            "También le informamos que",
+            "el cual puede consultarlo",
+            "Con BBVA adelante.",
             "100 %",
         )
 
